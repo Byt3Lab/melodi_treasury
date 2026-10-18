@@ -1,0 +1,6 @@
+{
+    "version": "0.1.0",
+    "name": "melodi_treasury",
+    "title": "Gestion de Trésorerie",
+    "description": "Suivi strict des flux de liquidités (caisses physiques, comptes bancaires, etc.)."
+}

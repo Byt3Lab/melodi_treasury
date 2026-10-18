@@ -1,0 +1,310 @@
+<div class="p-4">
+  <!-- Header Section -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+    <div>
+      <div class="d-flex align-items-center gap-2 mb-1">
+        <h4 class="mb-0 fw-bold text-dark">{{ t('treasury.title', 'Gestion de la Trésorerie') }}</h4>
+        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1">
+          <img src="/static_base_icons?name=account_balance_wallet&fill=%23059669"
+            style="width:14px;height:14px;vertical-align:-2px;" class="me-1">
+          {{ t('melodi_treasury.caisses_comptes_bancaires', 'Caisses & Comptes Bancaires') }}
+        </span>
+      </div>
+      <p class="text-muted small mb-0">{{ t('melodi_treasury.suivi_des_liquidites_disponibles', 'Suivi des liquidités disponibles, des journaux de caisse, des entrées/sorties et
+        des flux financiers.') }}</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="/admin/melodi_treasury/journals/create" id="btn-create-journal"
+        class="btn btn-dark btn-sm px-3 shadow-sm d-inline-flex align-items-center gap-1">
+        <img src="/static_base_icons?name=add&fill=white" style="width:16px;height:16px;">
+        {{ t('melodi_treasury.nouveau_journal', 'Nouveau Journal') }}
+      </a>
+      <a href="/admin/melodi_treasury/journals" id="btn-all-journals"
+        class="btn btn-outline-dark btn-sm px-3 shadow-sm d-inline-flex align-items-center gap-1">
+        <img src="/static_base_icons?name=wallet&fill=%23212529" style="width:16px;height:16px;">
+        {{ t('melodi_treasury.tous_les_journaux', 'Tous les Journaux') }}
+      </a>
+      <a href="/admin/melodi_treasury/transactions" id="btn-all-transactions"
+        class="btn btn-primary btn-sm px-3 shadow-sm d-inline-flex align-items-center gap-1">
+        <img src="/static_base_icons?name=swap_horiz&fill=white" style="width:16px;height:16px;">
+        {{ t('melodi_treasury.historique_transactions', 'Historique Transactions') }}
+      </a>
+    </div>
+  </div>
+
+  <!-- Metrics Cards Row -->
+  <div class="row g-3 mb-4">
+    <!-- Total Available Balance Card -->
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="card border-0 shadow-sm rounded-3 h-100 position-relative overflow-hidden"
+        style="background: linear-gradient(135deg, #059669 0%, #047857 100%);">
+        <div class="card-body text-white p-3">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <span class="text-white-50 small fw-semibold text-uppercase tracking-wider">{{ t('melodi_treasury.solde_total_disponible', 'Solde Total Disponible') }}</span>
+              <h3 class="fw-bold mb-0 mt-1 text-white">{{ "%.2f"|format(stats.total_balance) }}</h3>
+            </div>
+            <div class="rounded-circle p-2 bg-white bg-opacity-10">
+              <img src="/static_base_icons?name=account_balance_wallet&fill=white" style="width:24px;height:24px;">
+            </div>
+          </div>
+          <div
+            class="mt-3 pt-2 border-top border-white border-opacity-10 d-flex justify-content-between align-items-center text-xs">
+            <span class="text-white-50">{{ t('melodi_treasury.liquidites_actives', 'Liquidités Actives') }}</span>
+            <span class="badge bg-white bg-opacity-20 text-dark">{{ stats.active_journals }} Comptes Actifs</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Inflow Card -->
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="card border-0 shadow-sm rounded-3 h-100 position-relative overflow-hidden"
+        style="background: linear-gradient(135deg, #0b5ed7 0%, #1d4ed8 100%);">
+        <div class="card-body text-white p-3">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <span class="text-white-50 small fw-semibold text-uppercase tracking-wider">{{ t('melodi_treasury.cumul_entrees_inflow', 'Cumul Entrées (Inflow)') }}</span>
+              <h3 class="fw-bold mb-0 mt-1 text-white">+{{ "%.2f"|format(stats.total_inflow) }}</h3>
+            </div>
+            <div class="rounded-circle p-2 bg-white bg-opacity-10">
+              <img src="/static_base_icons?name=arrow_downward&fill=white" style="width:24px;height:24px;">
+            </div>
+          </div>
+          <div
+            class="mt-3 pt-2 border-top border-white border-opacity-10 d-flex justify-content-between align-items-center text-xs">
+            <span class="text-white-50">{{ t('melodi_treasury.recettes_encaissements', 'Recettes & Encaissements') }}</span>
+            <span class="badge bg-white bg-opacity-20 text-dark">{{ t('melodi_treasury.flux_crediteur', 'Flux Créditeur') }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Outflow Card -->
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="card border-0 shadow-sm rounded-3 h-100 position-relative overflow-hidden"
+        style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);">
+        <div class="card-body text-white p-3">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <span class="text-white-50 small fw-semibold text-uppercase tracking-wider">{{ t('melodi_treasury.cumul_sorties_outflow', 'Cumul Sorties (Outflow)') }}</span>
+              <h3 class="fw-bold mb-0 mt-1 text-white">-{{ "%.2f"|format(stats.total_outflow) }}</h3>
+            </div>
+            <div class="rounded-circle p-2 bg-white bg-opacity-10">
+              <img src="/static_base_icons?name=arrow_upward&fill=white" style="width:24px;height:24px;">
+            </div>
+          </div>
+          <div
+            class="mt-3 pt-2 border-top border-white border-opacity-10 d-flex justify-content-between align-items-center text-xs">
+            <span class="text-white-50">{{ t('melodi_treasury.depenses_decaissements', 'Dépenses & Décaissements') }}</span>
+            <span class="badge bg-white bg-opacity-20 text-dark">{{ t('melodi_treasury.flux_debiteur', 'Flux Débiteur') }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Net Cash Flow Card -->
+    <div class="col-12 col-sm-6 col-lg-3">
+      <div class="card border-0 shadow-sm rounded-3 h-100 position-relative overflow-hidden"
+        style="background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);">
+        <div class="card-body text-white p-3">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <span class="text-white-50 small fw-semibold text-uppercase tracking-wider">{{ t('melodi_treasury.flux_net_net_cash', 'Flux Net (Net Cash)') }}</span>
+              <h3 class="fw-bold mb-0 mt-1 text-white">{{ "%.2f"|format(stats.net_cash_flow) }}</h3>
+            </div>
+            <div class="rounded-circle p-2 bg-white bg-opacity-10">
+              <img src="/static_base_icons?name=show_chart&fill=white" style="width:24px;height:24px;">
+            </div>
+          </div>
+          <div
+            class="mt-3 pt-2 border-top border-white border-opacity-10 d-flex justify-content-between align-items-center text-xs">
+            <span class="text-white-50">{{ t('melodi_treasury.solde_operationnel', 'Solde Opérationnel') }}</span>
+            <span class="badge bg-white bg-opacity-20 text-dark">{{ stats.total_tx_count }} Transactions</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Treasury Journals List Grid -->
+  <div class="row g-4 mb-4">
+    <div class="col-12 col-lg-7">
+      <div class="card shadow-sm border-0 rounded-3 h-100">
+        <div class="card-header bg-white py-3 border-0 d-flex align-items-center justify-content-between">
+          <h6 class="mb-0 fw-bold text-dark d-flex align-items-center gap-2">
+            <img src="/static_base_icons?name=wallet&fill=%23059669" style="width:18px;height:18px;">
+            {{ t('melodi_treasury.comptes_caisses_de_tresorerie', 'Comptes & Caisses de Trésorerie') }}
+          </h6>
+          <a href="/admin/melodi_treasury/journals" class="btn btn-sm btn-outline-success rounded-pill px-3"
+            style="font-size:0.78rem;">{{ t('melodi_treasury.tous_les_journaux', 'Tous les journaux') }}</a>
+        </div>
+        <div class="card-body pt-0">
+          {% if journals %}
+          <div class="row g-3">
+            {% for j in journals %}
+            <div class="col-12 col-md-6">
+              <div class="p-3 bg-light rounded-3 border h-100 d-flex flex-column justify-content-between">
+                <div>
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="fw-bold text-dark fs-6">{{ j.name }}</span>
+                    {% if j.journal_type == JournalType.CASH %}
+                    <span class="badge bg-success-subtle text-success border border-success-subtle">{{ t('melodi_treasury.especes_caisse', 'Espèces
+                      (Caisse)') }}</span>
+                    {% elif j.journal_type == JournalType.BANK %}
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle">{{ t('melodi_treasury.banque', 'Banque') }}</span>
+                    {% elif j.journal_type == JournalType.MOBILE_MONEY %}
+                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">{{ t('melodi_treasury.mobile_money', 'Mobile
+                      Money') }}</span>
+                    {% endif %}
+                  </div>
+                  <div class="small text-muted mb-2">{{ t('melodi_treasury.devise', 'Devise :') }} <code>{{ j.currency }}</code></div>
+                </div>
+                <div class="pt-2 border-top d-flex justify-content-between align-items-center">
+                  <div>
+                    <span class="small text-muted d-block" style="font-size:0.75rem;">{{ t('melodi_treasury.solde_actuel', 'Solde Actuel') }}</span>
+                    <span class="fw-bold fs-5 text-dark">{{ "%.2f"|format(j.balance) }} {{ j.currency }}</span>
+                  </div>
+                  <a href="/admin/melodi_treasury/transactions/create?journal_id={{ j.journal_id }}"
+                    class="btn btn-light btn-xs border" title="{{ t('melodi_treasury.nouvelle_operation', 'Nouvelle opération') }}">
+                    <img src="/static_base_icons?name=add&fill=%23334155" style="width:14px;height:14px;">
+                  </a>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="text-center py-5 text-muted">
+            <img src="/static_base_icons?name=account_balance_wallet&fill=%2394a3b8" style="width:40px;height:40px;"
+              class="mb-2 d-block mx-auto">
+            {{ t('melodi_treasury.aucun_journal_de_tresorerie', 'Aucun journal de trésorerie configuré pour cette agence.') }}
+            <div class="mt-3">
+              <a href="/admin/melodi_treasury/journals/create" class="btn btn-sm btn-dark px-3">{{ t('melodi_treasury.creer_un_premier_journal', 'Créer un premier
+                journal') }}</a>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick breakdown by Type -->
+    <div class="col-12 col-lg-5">
+      <div class="card shadow-sm border-0 rounded-3 h-100">
+        <div class="card-header bg-white py-3 border-0">
+          <h6 class="mb-0 fw-bold text-dark d-flex align-items-center gap-2">
+            <img src="/static_base_icons?name=pie_chart&fill=%234f46e5" style="width:18px;height:18px;">
+            {{ t('melodi_treasury.apercu_des_journaux_par', 'Aperçu des Journaux par Type') }}
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="list-group list-group-flush border-top">
+            <div class="list-group-item d-flex justify-content-between align-items-center py-3">
+              <div class="d-flex align-items-center gap-2">
+                <div class="rounded-circle p-2 bg-success-subtle">
+                  <img src="/static_base_icons?name=payments&fill=%23059669" style="width:18px;height:18px;">
+                </div>
+                <div>
+                  <div class="fw-bold text-dark">{{ t('melodi_treasury.caisses_especes_cash', 'Caisses Espèces (Cash)') }}</div>
+                  <div class="small text-muted">{{ t('melodi_treasury.caisses_physiques_enregistrees', 'Caisses physiques enregistrées') }}</div>
+                </div>
+              </div>
+              <span class="badge bg-success rounded-pill px-3 fs-6">{{ stats.cash_count }}</span>
+            </div>
+
+            <div class="list-group-item d-flex justify-content-between align-items-center py-3">
+              <div class="d-flex align-items-center gap-2">
+                <div class="rounded-circle p-2 bg-primary-subtle">
+                  <img src="/static_base_icons?name=account_balance&fill=%230b5ed7" style="width:18px;height:18px;">
+                </div>
+                <div>
+                  <div class="fw-bold text-dark">{{ t('melodi_treasury.comptes_bancaires', 'Comptes Bancaires') }}</div>
+                  <div class="small text-muted">{{ t('melodi_treasury.comptes_bancaires_officiels', 'Comptes bancaires officiels') }}</div>
+                </div>
+              </div>
+              <span class="badge bg-primary rounded-pill px-3 fs-6">{{ stats.bank_count }}</span>
+            </div>
+
+            <div class="list-group-item d-flex justify-content-between align-items-center py-3">
+              <div class="d-flex align-items-center gap-2">
+                <div class="rounded-circle p-2 bg-warning-subtle">
+                  <img src="/static_base_icons?name=smartphone&fill=%23d97706" style="width:18px;height:18px;">
+                </div>
+                <div>
+                  <div class="fw-bold text-dark">{{ t('melodi_treasury.mobile_money', 'Mobile Money') }}</div>
+                  <div class="small text-muted">{{ t('melodi_treasury.comptes_de_paiement_mobile', 'Comptes de paiement mobile') }}</div>
+                </div>
+              </div>
+              <span class="badge bg-warning text-dark rounded-pill px-3 fs-6">{{ stats.mobile_count }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Transactions Table -->
+  <div class="card shadow-sm border-0 rounded-3">
+    <div class="card-header bg-white py-3 border-0 d-flex align-items-center justify-content-between">
+      <h6 class="mb-0 fw-bold text-dark d-flex align-items-center gap-2">
+        <img src="/static_base_icons?name=swap_horiz&fill=%23334155" style="width:18px;height:18px;">
+        {{ t('melodi_treasury.dernieres_transactions_financieres', 'Dernières Transactions Financières') }}
+      </h6>
+      <a href="/admin/melodi_treasury/transactions" class="btn btn-sm btn-outline-primary rounded-pill px-3"
+        style="font-size:0.78rem;">{{ t('melodi_treasury.voir_toutes_les_transactions', 'Voir toutes les transactions') }}</a>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0 text-sm">
+        <thead class="table-light">
+          <tr>
+            <th class="ps-4">{{ t('common.date', 'Date') }}</th>
+            <th>{{ t('treasury.target_journal', 'Journal') }}</th>
+            <th>{{ t('melodi_treasury.source_motif', 'Source / Motif') }}</th>
+            <th>{{ t('melodi_treasury.sens_direction', 'Sens (Direction)') }}</th>
+            <th>{{ t('treasury.amount', 'Montant') }}</th>
+            <th>{{ t('common.description', 'Description') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if recent_transactions %}
+          {% for tx in recent_transactions %}
+          <tr>
+            <td class="ps-4 text-dark">{{ tx.created_at.strftime('%d/%m/%Y %H:%M') if tx.created_at else '-' }}</td>
+            <td class="fw-bold text-dark">{{ tx.journal.name if tx.journal else '-' }}</td>
+            <td>
+              <span class="badge bg-secondary-subtle text-dark border">{{ tx.source_type.value }}</span>
+            </td>
+            <td>
+              {% if tx.direction == TransactionDirection.IN %}
+              <span
+                class="badge bg-success-subtle text-success border border-success-subtle d-inline-flex align-items-center gap-1">
+                <img src="/static_base_icons?name=arrow_downward&fill=%23059669" style="width:12px;height:12px;"> {{ t('melodi_treasury.entree_inflow', 'Entrée
+                (Inflow)') }}
+              </span>
+              {% else %}
+              <span
+                class="badge bg-danger-subtle text-danger border border-danger-subtle d-inline-flex align-items-center gap-1">
+                <img src="/static_base_icons?name=arrow_upward&fill=%23dc2626" style="width:12px;height:12px;"> {{ t('melodi_treasury.sortie_outflow', 'Sortie
+                (Outflow)') }}
+              </span>
+              {% endif %}
+            </td>
+            <td
+              class="fw-bold {% if tx.direction == TransactionDirection.IN %}text-success{% else %}text-danger{% endif %}">
+              {% if tx.direction == TransactionDirection.IN %}+{% else %}-{% endif %}{{ "%.2f"|format(tx.amount) }}
+            </td>
+            <td class="text-muted text-truncate" style="max-width: 260px;">{{ tx.description or '-' }}</td>
+          </tr>
+          {% endfor %}
+          {% else %}
+          <tr>
+            <td colspan="6" class="text-center py-4 text-muted">{{ t('melodi_treasury.aucune_transaction_enregistree_dans', 'Aucune transaction enregistrée dans les journaux de
+              cette agence.') }}</td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

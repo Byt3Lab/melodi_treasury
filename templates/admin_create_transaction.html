@@ -1,0 +1,59 @@
+{% set error_msg = request.args.get('error') %}
+{% if error_msg %}
+<div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm d-flex align-items-center mb-4" role="alert">
+  <img src="/static_base_icons?name=warning&fill=red" style="width: 20px; height: 20px;" class="me-2">
+  <div><strong>{{ t('common.error', 'Erreur') }} :</strong> {{ error_msg }}</div>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
+<div class="p-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h4 class="mb-1">{{ t('treasury.manual_adjustment', 'Nouvel Ajustement Manuel') }}</h4>
+      <p class="text-muted small mb-0">{{ t('treasury.manual_adjustment_subtitle', 'Enregistrez un versement exceptionnel ou un décaissement manuel sur un journal de caisse.') }}</p>
+    </div>
+    <a href="/admin/melodi_treasury/transactions" class="btn btn-light btn-sm border">
+      <img src="/static_base_icons?name=arrow_back&fill=gray" style="width: 18px; height: 18px;" class="me-2">{{ t('melodi_treasury.retour', 'Retour') }}
+    </a>
+  </div>
+
+  <div class="card shadow-sm border-0 max-w-2xl">
+    <div class="card-body p-4">
+      <form method="POST" action="/admin/melodi_treasury/transactions/create">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="journal_display" class="form-label small fw-bold">{{ t('treasury.target_journal', 'Journal Cible') }} *</label>
+            <input type="hidden" id="journal_id" name="journal_id" value="{{ journal.journal_id }}" required>
+            <input type="text" class="form-control form-control-sm bg-light" id="journal_display" value="{{ journal.name }} (Solde: {{ '{:,.2f}'.format(journal.balance) }} {{ journal.currency }})" readonly>
+          </div>
+          <div class="col-md-6">
+            <label for="direction" class="form-label small fw-bold">{{ t('melodi_treasury.operation', 'Opération *') }}</label>
+            <select class="form-select form-select-sm" id="direction" name="direction" required>
+              <option value="IN">{{ t('melodi_treasury.entree_de_fonds_encaissement', 'Entrée de fonds (Encaissement)') }}</option>
+              <option value="OUT">{{ t('melodi_treasury.sortie_de_fonds_decaissement', 'Sortie de fonds (Décaissement)') }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="amount" class="form-label small fw-bold">{{ t('treasury.amount', 'Montant') }} *</label>
+          <div class="input-group input-group-sm">
+            <input type="number" step="0.0001" class="form-control" id="amount" name="amount" placeholder="0.0000" required>
+            <span class="input-group-text bg-light text-muted">{{ journal.currency }}</span>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label for="description" class="form-label small fw-bold">{{ t('melodi_treasury.description_motif', 'Description / Motif') }}</label>
+          <textarea class="form-control form-control-sm" id="description" name="description" rows="3" placeholder="{{ t('melodi_treasury.ph_description', 'Saisir la raison de cet ajustement...') }}"></textarea>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+          <a href="/admin/melodi_treasury/transactions" class="btn btn-light btn-sm border">{{ t('melodi_treasury.annuler', 'Annuler') }}</a>
+          <button type="submit" class="btn btn-dark btn-sm shadow-sm">{{ t('melodi_treasury.enregistrer_l_operation', 'Enregistrer l\'opération') }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,60 @@
+{% set error_msg = request.args.get('error') %}
+{% if error_msg %}
+<div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm d-flex align-items-center mb-4" role="alert">
+  <img src="/static_base_icons?name=warning&fill=red" style="width: 20px; height: 20px;" class="me-2">
+  <div><strong>{{ t('common.error', 'Erreur') }} :</strong> {{ error_msg }}</div>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
+<div class="p-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h4 class="mb-1">{{ t('treasury.create_journal', 'Créer un Journal') }}</h4>
+      <p class="text-muted small mb-0">{{ t('treasury.create_journal_subtitle', 'Ajoutez une caisse physique, un compte en banque ou de paiement mobile à votre trésorerie.') }}</p>
+    </div>
+    <a href="/admin/melodi_treasury/journals" class="btn btn-light btn-sm border">
+      <img src="/static_base_icons?name=arrow_back&fill=gray" style="width: 18px; height: 18px;" class="me-2">{{ t('melodi_treasury.retour', 'Retour') }}
+    </a>
+  </div>
+
+  <div class="card shadow-sm border-0 max-w-2xl">
+    <div class="card-body p-4">
+      <form method="POST" action="/admin/melodi_treasury/journals/create">
+        <div class="mb-3">
+          <label for="name" class="form-label small fw-bold">{{ t('treasury.journal_name', 'Nom du Journal') }} *</label>
+          <input type="text" class="form-control form-control-sm" id="name" name="name" placeholder="{{ t('melodi_treasury.ph_journal_name', 'Ex: Caisse Principale Douala, Compte Ecobank...') }}" required>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="journal_type" class="form-label small fw-bold">{{ t('melodi_treasury.type_de_tresorerie', 'Type de Trésorerie *') }}</label>
+            <select class="form-select form-select-sm" id="journal_type" name="journal_type" required>
+              <option value="CASH">{{ t('melodi_treasury.caisse_physique_especes', 'Caisse Physique (Espèces)') }}</option>
+              <option value="BANK">{{ t('treasury.type_bank', 'Compte Bancaire') }}</option>
+              <option value="MOBILE_MONEY">{{ t('melodi_treasury.paiement_mobile_momo_om', 'Paiement Mobile (Momo / OM)') }}</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label for="currency" class="form-label small fw-bold">{{ t('treasury.currency', 'Devise') }} *</label>
+            <input type="text" class="form-control form-control-sm bg-light" id="currency" name="currency" value="{{ branch_currency }}" readonly>
+            <div class="form-text x-small text-muted">{{ t('melodi_treasury.determinee_automatiquement_par_l', 'Déterminée automatiquement par l\'agence active.') }}</div>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label for="initial_balance" class="form-label small fw-bold">{{ t('treasury.current_balance', 'Solde Initial') }}</label>
+          <div class="input-group input-group-sm">
+            <input type="number" step="0.0001" class="form-control" id="initial_balance" name="initial_balance" placeholder="0.0000" value="0.0000">
+            <span class="input-group-text bg-light text-muted">{{ branch_currency }}</span>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+          <a href="/admin/melodi_treasury/journals" class="btn btn-light btn-sm border">{{ t('melodi_treasury.annuler', 'Annuler') }}</a>
+          <button type="submit" class="btn btn-dark btn-sm shadow-sm">{{ t('melodi_treasury.creer_le_journal', 'Créer le journal') }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
