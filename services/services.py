@@ -25,7 +25,7 @@ class TreasuryService:
         """
         Creates a new treasury journal. Enforces using the branch's local currency.
         """
-        from base.models.branch_model import BranchModel
+        from modules.melodi_branches.models.branch_model import BranchModel
         
         # Récupérer la branche associée pour obtenir sa monnaie locale
         stmt = select(BranchModel).where(BranchModel.branch_id == branch_id)
@@ -127,6 +127,54 @@ class TreasuryService:
         )
         session.add(transaction)
         await session.flush()
+
+        # Enregistrement du fait économique universel dans melodi_economic
+        try:
+            from modules.melodi_economic.services.economic_service import EconomicService
+            from modules.melodi_economic.models.enums import OperationType, MovementType, MovementDirection
+
+            op_type = OperationType.RECEIPT if direction == TransactionDirection.IN else OperationType.PAYMENT
+            mov_type = MovementType.CASH_INFLOW if direction == TransactionDirection.IN else MovementType.CASH_OUTFLOW
+
+            await EconomicService.record_operation(
+                session=session,
+                payload={
+                    "branch_id": journal.branch_id,
+                    "operation_type": op_type,
+                    "source_module": "melodi_treasury",
+                    "source_entity": "treasury_transaction",
+                    "source_id": transaction.transaction_id,
+                    "idempotency_key": f"treasury:tx:{transaction.transaction_id}",
+                    "currency_code": journal.currency,
+                    "total_amount": exchanged_amount,
+                    "description": description or f"Treasury {direction.value} transaction",
+                    "created_by": created_by_user_id,
+                    "movements": [
+                        {
+                            "movement_type": mov_type,
+                            "direction": MovementDirection.IN if direction == TransactionDirection.IN else MovementDirection.OUT,
+                            "economic_object_type": "TREASURY_ACCOUNT",
+                            "economic_object_id": journal.journal_id,
+                            "amount": exchanged_amount,
+                            "currency_code": journal.currency
+                        }
+                    ],
+                    "settlements": [
+                        {
+                            "settlement_type": "DIRECT_PAYMENT",
+                            "payment_method": journal.journal_type.value if hasattr(journal.journal_type, "value") else str(journal.journal_type),
+                            "target_obligation_type": source_type.value if hasattr(source_type, "value") else str(source_type),
+                            "target_obligation_id": reference_id,
+                            "amount": exchanged_amount,
+                            "currency_code": journal.currency
+                        }
+                    ] if reference_id else []
+                }
+            )
+        except Exception:
+            # Si melodi_economic n'est pas actif ou échoue, ne bloque pas les transactions treasury autonomes
+            pass
+
         return transaction
 
     @staticmethod

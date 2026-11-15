@@ -69,7 +69,7 @@ class TreasuryWebController:
         if not active_branch_id:
             return response.redirect("/admin/melodi_treasury/journals?error=Aucune+agence+active")
 
-        from base.models.branch_model import BranchModel
+        from modules.melodi_branches.models.branch_model import BranchModel
 
         async with request.module.app.db.get_session() as session:
             branch = await session.get(BranchModel, active_branch_id)
